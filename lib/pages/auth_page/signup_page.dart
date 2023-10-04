@@ -60,77 +60,6 @@ class SignupPage extends HookWidget {
               const SizedBox(
                 height: 10,
               ),
-              // GestureDetector(
-              //   onTap: () {
-              //     showBottomSheet(
-              //       context: context,
-              //       builder: (context) => Container(
-              //         height: 100,
-              //         width: MediaQuery.of(context).size.width,
-              //         margin: const EdgeInsets.symmetric(
-              //           horizontal: 20,
-              //           vertical: 20,
-              //         ),
-              //         child: Column(
-              //           children: [
-              //             const Text(
-              //               'Choose Profile Photo',
-              //               style: TextStyle(fontSize: 20),
-              //             ),
-              //             const SizedBox(
-              //               height: 20,
-              //             ),
-              //             Row(
-              //               mainAxisAlignment: MainAxisAlignment.center,
-              //               children: [
-              //                 TextButton.icon(
-              //                   onPressed: () async {
-              //                     await imageProvider.pickImageFromCamera();
-              //                   },
-              //                   icon: const Icon(Icons.camera),
-              //                   label: const Text('Camera'),
-              //                 ),
-              //                 TextButton.icon(
-              //                     onPressed: () async {
-              //                       await imageProvider.pickImageFromGallery();
-              //                     },
-              //                     icon: const Icon(Icons.image),
-              //                     label: const Text('Gallery'))
-              //               ],
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     );
-              //   },
-              //   child: Container(
-              //     height: 140,
-              //     width: 145,
-              //     decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(70),
-              //       image: imageProvider.selectedImage == null
-              //           ? null
-              //           : DecorationImage(
-              //               image: FileImage(imageProvider.selectedImage!),
-              //               fit: BoxFit.cover),
-              //       border: Border.all(
-              //         color: Colors.black54,
-              //         width: 2,
-              //       ),
-              //     ),
-              //     child: imageProvider.selectedImage == null
-              //         ? const Positioned(
-              //             bottom: -10,
-              //             left: 80,
-              //             child: Icon(
-              //               Icons.add_a_photo_rounded,
-              //               color: Colors.black,
-              //               size: 40,
-              //             ),
-              //           )
-              //         : null,
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 30),
                 child: Stack(
@@ -139,14 +68,22 @@ class SignupPage extends HookWidget {
                       height: 130,
                       width: 130,
                       decoration: BoxDecoration(
-                          color: Colors.amber,
-                          borderRadius: BorderRadius.circular(50),
-                          image: imageProvider.selectedImage != null
-                              ? DecorationImage(
-                                  image:
-                                      FileImage(imageProvider.selectedImage!),
-                                  fit: BoxFit.cover)
-                              : null),
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: imageProvider.selectedImage != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.file(
+                                imageProvider.selectedImage!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: 80,
+                              color: Colors.white,
+                            ),
                     ),
                     Positioned(
                       bottom: -10,
@@ -201,16 +138,6 @@ class SignupPage extends HookWidget {
                                 ),
                               ),
                             );
-                            // .then((value) async {
-                            //   if (imageProvider.selectedImage != null) {
-                            //     final uploadProvider =
-                            //         Provider.of<FileUploadProvider>(context,
-                            //             listen: false);
-                            //     await uploadProvider.fileUpload(
-                            //         file: imageProvider.selectedImage!,
-                            //         fileName: 'user-image}');
-                            //   }
-                            // });
                           },
                           icon: const Icon(
                             Icons.add_a_photo,
