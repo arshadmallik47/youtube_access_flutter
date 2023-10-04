@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "732577359970",
+    "project_id": "access-limit-52a68",
+    "storage_bucket": "access-limit-52a68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732577359970:android:3ed2368e6be162f74f493b",
+        "android_client_info": {
+          "package_name": "com.example.youtube"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd4CYqXfKfTZF795MfOyj1APSDcAHICQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
