@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:example/models/user_model.dart';
 import 'package:example/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ class AuthProvider extends ChangeNotifier {
   User? get currentuser => FirebaseAuth.instance.currentUser;
 
   final userCollection = FirebaseFirestore.instance.collection('users');
+  //final childrenCollection = FirebaseFirestore.instance.collection('child');
 
   final _authService = AuthService();
 
@@ -22,6 +24,7 @@ class AuthProvider extends ChangeNotifier {
       String email, String password) async {
     return await _authService.registerWithEmailAndPassword(email, password);
   }
+  // add user to firestore
 
   Future<void> addUserToFirestore(UserModel userModel) async {
     await userCollection.doc(userModel.uid).set(userModel.toJson());
@@ -37,13 +40,6 @@ class AuthProvider extends ChangeNotifier {
     return UserModel.fromJson(user.data()!);
   }
 
-  // Future<void> signOut() async {
-  //   await _authService.signOut();
-  // }
-
-  // Future<void> deleteUserAccount() async {
-  //   await currentuser?.delete();
-  // }
   Future<void> updateUserImage(String uid, String imageUrl) async {
     await userCollection.doc(uid).update({'profileImage': imageUrl});
   }

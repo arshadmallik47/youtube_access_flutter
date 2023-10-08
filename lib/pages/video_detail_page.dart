@@ -3,9 +3,8 @@
 import 'dart:convert';
 import 'package:example/models/subscribed.dart';
 import 'package:example/providers/auth_provider.dart';
-import 'package:example/providers/home_provider.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_share/flutter_share.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pod_player/pod_player.dart';
 import 'package:youtube_scrape_api/models/video_data.dart';
@@ -29,7 +28,6 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   bool isSwitched = true;
   late PodPlayerController _controller;
   AuthProvider authProvider = AuthProvider();
-  HomeProvider homeProvider = HomeProvider();
 
   // for video player
   late int _playBackTime;
@@ -49,7 +47,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 5), () {
-      checkFuture = check();
+      // checkFuture = check();
     });
     _controller = PodPlayerController(
       playVideoFrom:
@@ -57,11 +55,11 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
     )..initialise();
   }
 
-  Future<bool> check() async {
-    return homeProvider.checkSubscribedChannels(videoData!.video!.channelId!);
-    // return await sharedHelper
-    //     .checkSubscribedChannels(videoData!.video!.channelId!);
-  }
+  // Future<bool> check() async {
+  //   return homeProvider.checkSubscribedChannels(videoData!.video!.channelId!);
+  //   // return await sharedHelper
+  //   //     .checkSubscribedChannels(videoData!.video!.channelId!);
+  // }
 
   @override
   void dispose() {
@@ -221,43 +219,62 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                         //     )
                                         //   ],
                                         // ),
-                                        Column(
-                                          children: <Widget>[
-                                            Icon(
-                                              LineIcons.share,
-                                              color: white.withOpacity(0.5),
-                                              size: 26,
-                                            ),
-                                            const SizedBox(
-                                              height: 2,
-                                            ),
-                                            Text(
-                                              "Share",
-                                              style: TextStyle(
-                                                  color: white.withOpacity(0.4),
-                                                  fontSize: 13,
-                                                  fontFamily: 'Cairo'),
-                                            )
-                                          ],
+                                        InkWell(
+                                          onTap: (() async {
+                                            final videoId =
+                                                videoData!.video!.videoId;
+                                            final videoUrl =
+                                                'https://www.youtube.com/watch?v=$videoId';
+                                            FlutterShare.share(
+                                              linkUrl: videoUrl,
+                                              title: 'Video',
+                                            );
+                                          }),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Icon(
+                                                LineIcons.share,
+                                                color: white.withOpacity(0.5),
+                                                size: 26,
+                                              ),
+                                              const SizedBox(
+                                                height: 2,
+                                              ),
+                                              //InkWell(
+
+                                              Text(
+                                                "Share",
+                                                style: TextStyle(
+                                                    color:
+                                                        white.withOpacity(0.4),
+                                                    fontSize: 13,
+                                                    fontFamily: 'Cairo'),
+                                              ),
+                                              // )
+                                            ],
+                                          ),
                                         ),
-                                        Column(
-                                          children: <Widget>[
-                                            Icon(
-                                              LineIcons.download,
-                                              color: white.withOpacity(0.5),
-                                              size: 26,
-                                            ),
-                                            const SizedBox(
-                                              height: 2,
-                                            ),
-                                            Text(
-                                              "Download",
-                                              style: TextStyle(
-                                                  color: white.withOpacity(0.4),
-                                                  fontSize: 13,
-                                                  fontFamily: 'Cairo'),
-                                            )
-                                          ],
+                                        InkWell(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Icon(
+                                                LineIcons.download,
+                                                color: white.withOpacity(0.5),
+                                                size: 26,
+                                              ),
+                                              const SizedBox(
+                                                height: 2,
+                                              ),
+                                              Text(
+                                                "Download",
+                                                style: TextStyle(
+                                                    color:
+                                                        white.withOpacity(0.4),
+                                                    fontSize: 13,
+                                                    fontFamily: 'Cairo'),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                         // Column(
                                         //   children: <Widget>[
@@ -722,4 +739,17 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
 
     ///TODO: Unsubscribe channel from video page
   }
+
+  // download
+  // Future<void> downloadVideo() async {
+  //   final String youtubeVideoId = videoData!.video!.videoId!;
+  //   final taskId = await FlutterDownloader.enqueue(
+  //     url: 'https://www.youtube.com/watch?v=$youtubeVideoId',
+  //     savedDir: '/storage/emulated/0/Download',
+  //     fileName: '$youtubeVideoId.mp4',
+  //     showNotification: true,
+  //     openFileFromNotification: true,
+  //   );
+  //   print('Download task ID: $taskId');
+  // }
 }

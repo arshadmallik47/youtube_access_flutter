@@ -50,6 +50,11 @@ dependencies:
   shared_preferences: ^2.0.15
   cached_network_image: ^3.2.3
   
+  http: ^1.1.0
+  flutter_share: ^2.0.0
+  flutter_downloader: ^1.11.3
+
+  
   pod_player: ^0.0.6
   line_icons: ^2.0.1
 

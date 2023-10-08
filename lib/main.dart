@@ -1,4 +1,4 @@
-import 'package:example/pages/auth_page/signup_page.dart';
+import 'package:example/pages/starter_page.dart';
 import 'package:example/services/app_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => AppProvider(
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: const SignupPage(),
+          home: const StarterPage(),
           builder: EasyLoading.init(),
           theme: ThemeData(
               brightness: Brightness.dark,

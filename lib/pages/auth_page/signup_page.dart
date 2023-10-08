@@ -147,14 +147,6 @@ class SignupPage extends HookWidget {
                     ),
                   ],
                 ),
-                // child: Text(
-                //   'SIGN UP',
-                //   textAlign: TextAlign.center,
-                //   style: TextStyle(
-                //       fontSize: 28,
-                //       fontWeight: FontWeight.bold,
-                //       color: Colors.red),
-                // ),
               ),
               const SizedBox(
                 height: 15,
