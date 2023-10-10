@@ -279,18 +279,6 @@ class SignupPage extends HookWidget {
                     await authProvider.signInWithGoogle();
                     EasyLoading.dismiss();
                     Utils.navigateTo(context, const HomePage());
-                    // if (res.user != null) {
-                    //   final usermodel = UserModel(
-                    //     uid: res.user!.uid,
-                    //     userName: usernameController.text.toString(),
-                    //     email: emailController.text.toString(),
-                    //     createdAt: res.user!.metadata.creationTime!,
-                    //     userImage: res.user!.photoURL,
-                    //   );
-                    //   authProvider.addUserToFirestore(usermodel);
-                    // }
-
-                    // }
                   },
                   child: const Text('Continue with Google')),
             ],

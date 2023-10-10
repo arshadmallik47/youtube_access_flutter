@@ -8,6 +8,7 @@ import 'package:example/providers/image_picker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class UtilsDialog {
   static Future<void> showAddChildDialog(
@@ -137,7 +138,10 @@ class UtilsDialog {
                           final childProvider = Provider.of<ChildProvider>(
                               context,
                               listen: false);
+                          final String uniqueChildUid = const Uuid().v4();
+
                           await childProvider.addChildToFirestore(ChildModel(
+                              uid: uniqueChildUid,
                               childName: name,
                               securtiyCode: securitycode,
                               imageUrl: pictureUrl,
@@ -182,7 +186,7 @@ class UtilsDialog {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Add Child'),
+              title: const Text('Update Child'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -217,6 +221,7 @@ class UtilsDialog {
                       await childProvider.updateChild(childUid,
                           childUrlController.text, childNameController.text);
                       Utils.back(context);
+                      EasyLoading.dismiss();
                     }
                   },
                   child: const Text('Update'),

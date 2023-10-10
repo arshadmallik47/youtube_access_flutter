@@ -219,7 +219,7 @@ class SettingPage extends StatelessWidget {
                                         IconButton(
                                             onPressed: () {
                                               UtilsDialog.updateChildDialog(
-                                                  context, user.uid);
+                                                  context, child.uid);
                                             },
                                             icon: const Icon(Icons.edit))
                                       ],

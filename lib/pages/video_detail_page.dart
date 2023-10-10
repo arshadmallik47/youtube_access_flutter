@@ -1,12 +1,16 @@
 // ignore_for_file: must_be_immutable, library_private_types_in_public_api, unused_field
 
 import 'dart:convert';
+import 'package:example/models/child_model.dart';
 import 'package:example/models/subscribed.dart';
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/providers/child_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pod_player/pod_player.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_scrape_api/models/video_data.dart';
 import 'package:youtube_scrape_api/youtube_scrape_api.dart';
 import '../constants.dart';
@@ -42,6 +46,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   bool isSubscribed = false;
   SharedHelper sharedHelper = SharedHelper();
   late Future<bool> checkFuture;
+  ChildModel? childModel;
 
   @override
   void initState() {
@@ -227,7 +232,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                                 'https://www.youtube.com/watch?v=$videoId';
                                             FlutterShare.share(
                                               linkUrl: videoUrl,
-                                              title: 'Video',
+                                              title: 'Share',
                                             );
                                           }),
                                           child: Column(
@@ -306,7 +311,19 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            // final childProvider =
+                                            //     Provider.of<ChildProvider>(
+                                            //         context,
+                                            //         listen: false);
+                                            // childProvider.allowVideoForChild(
+                                            //   videoData!.video!.videoId!,
+                                            // );
+                                            //  childProvider.allowVideoForChild(
+                                            //    childProvider.currentuser!.uid,
+                                            //    videoData!.video!.videoId!,
+                                            //  );
+                                          },
                                           child: const Text(
                                             'Allow Video for child',
                                             style: TextStyle(fontSize: 12),

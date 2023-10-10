@@ -41,6 +41,7 @@ dependencies:
   
 
   fluttertoast: ^8.2.2
+  uuid: ^4.1.0
   firebase_storage: ^11.2.8
   flutter_easyloading: ^3.0.5
   provider: ^6.0.5

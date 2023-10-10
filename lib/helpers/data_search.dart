@@ -65,9 +65,9 @@ class DataSearch extends SearchDelegate<String> {
               showResults(context);
             },
             child: ListTile(
-              leading: Icon(Icons.north_west),
+              leading: const Icon(Icons.north_west),
               title: Text(suggestions[index]),
-              trailing: Icon(Icons.history_outlined),
+              trailing: const Icon(Icons.history_outlined),
             ),
           );
         },

@@ -4,8 +4,7 @@ class ChildModel {
   final String imageUrl;
   final List<String> videos;
   final List<String> channels;
-
-  String? uid;
+  final String uid;
 
   ChildModel({
     required this.childName,
@@ -13,12 +12,14 @@ class ChildModel {
     required this.imageUrl,
     required this.videos,
     required this.channels,
+    required this.uid,
   });
   factory ChildModel.fromJson(Map<String, dynamic> json) {
     return ChildModel(
       childName: json['childname'],
       securtiyCode: json['securityCode'],
       imageUrl: json['imageUrl'],
+      uid: json['uid'],
       videos: List<String>.from(json['videos']),
       channels: List<String>.from(json['channels']),
     );
@@ -31,5 +32,6 @@ class ChildModel {
         'imageUrl': imageUrl,
         'videos': videos,
         'channels': channels,
+        'uid': uid,
       };
 }
