@@ -16,8 +16,22 @@ import 'package:example/widgets/cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
+
+  @override
+  State<SettingPage> createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  late Future<void> childFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    childFuture =
+        Provider.of<ChildProvider>(context, listen: false).getChilds();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,30 +185,25 @@ class SettingPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    FutureBuilder<QuerySnapshot>(
-                      future: childrenCollection(
-                              parentId: childProvider.currentuser!.uid)
-                          .get(),
+                    FutureBuilder(
+                      future: childFuture,
                       builder: (contex, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
                               child: CircularProgressIndicator());
-                        } else if (!snapshot.hasData) {
+                        } else if (childProvider.child.isEmpty) {
                           return const Center(child: Text('No child found'));
                         } else {
-                          final data = snapshot.data!.docs;
-
                           return ListView.separated(
                             shrinkWrap: true,
-                            itemCount: data.length,
+                            itemCount: childProvider.child.length,
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               return const SizedBox();
                             },
                             itemBuilder: (BuildContext context, int index) {
-                              final child = ChildModel.fromJson(
-                                  data[index].data() as Map<String, dynamic>);
+                              final child = childProvider.child[index];
                               return Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Row(

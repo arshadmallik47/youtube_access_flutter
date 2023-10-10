@@ -1,6 +1,9 @@
 // ignore_for_file: must_be_immutable, library_private_types_in_public_api, unused_field
 
 import 'dart:convert';
+import 'package:example/Utils/child_channel_popup.dart';
+import 'package:example/Utils/child_video_popup.dart';
+import 'package:example/Utils/utils.dart';
 import 'package:example/models/child_model.dart';
 import 'package:example/models/subscribed.dart';
 import 'package:example/providers/auth_provider.dart';
@@ -59,12 +62,6 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
           PlayVideoFrom.youtube('https://youtu.be/${widget.videoId}'),
     )..initialise();
   }
-
-  // Future<bool> check() async {
-  //   return homeProvider.checkSubscribedChannels(videoData!.video!.channelId!);
-  //   // return await sharedHelper
-  //   //     .checkSubscribedChannels(videoData!.video!.channelId!);
-  // }
 
   @override
   void dispose() {
@@ -312,24 +309,31 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                     children: [
                                       ElevatedButton(
                                           onPressed: () {
+                                            Utils.navigateTo(
+                                                context,
+                                                AllowVideoPopup(
+                                                    video: videoData!));
+
+                                            // final videoId =
+                                            //     videoData!.video!.videoId!;
                                             // final childProvider =
                                             //     Provider.of<ChildProvider>(
-                                            //         context,
-                                            //         listen: false);
+                                            //         context);
                                             // childProvider.allowVideoForChild(
-                                            //   videoData!.video!.videoId!,
-                                            // );
-                                            //  childProvider.allowVideoForChild(
-                                            //    childProvider.currentuser!.uid,
-                                            //    videoData!.video!.videoId!,
-                                            //  );
+                                            //     videoId, childModel!.uid);
                                           },
                                           child: const Text(
                                             'Allow Video for child',
                                             style: TextStyle(fontSize: 12),
                                           )),
                                       ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Utils.navigateTo(
+                                              context,
+                                              AllowChannelPopup(
+                                                  channel: videoData!),
+                                            );
+                                          },
                                           child: const Text(
                                             'Add Channel for child',
                                             style: TextStyle(fontSize: 12),
@@ -769,4 +773,13 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   //   );
   //   print('Download task ID: $taskId');
   // }
+
+  void _showPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AllowVideoPopup(video: videoData!);
+      },
+    );
+  }
 }

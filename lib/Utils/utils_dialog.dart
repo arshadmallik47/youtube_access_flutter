@@ -14,13 +14,10 @@ class UtilsDialog {
   static Future<void> showAddChildDialog(
       BuildContext context, String parentUid) async {
     final nameController = TextEditingController();
-
     final securityCodeController = TextEditingController();
     final imageProvider =
         Provider.of<ImagePickerProvider>(context, listen: false);
-
     bool isUploading = false;
-
     await showDialog(
       context: context,
       builder: (context) {
@@ -115,13 +112,11 @@ class UtilsDialog {
                   onPressed: () async {
                     final name = nameController.text.trim();
                     final securitycode = securityCodeController.text.trim();
-
                     if (name.isNotEmpty && securitycode.isNotEmpty) {
                       if (imageProvider.selectedImage != null && !isUploading) {
                         setState(() {
                           isUploading = true;
                         });
-
                         final uploadProvider = Provider.of<FileUploadProvider>(
                             context,
                             listen: false);
@@ -129,11 +124,9 @@ class UtilsDialog {
                           file: imageProvider.selectedImage!,
                           fileName: 'child-image-$name',
                         );
-
                         setState(() {
                           isUploading = false;
                         });
-
                         if (pictureUrl != null) {
                           final childProvider = Provider.of<ChildProvider>(
                               context,
@@ -147,6 +140,7 @@ class UtilsDialog {
                               imageUrl: pictureUrl,
                               videos: [],
                               channels: []));
+                          await childProvider.getChilds();
 
                           Utils.showToast('Child added successfully');
 
@@ -175,11 +169,7 @@ class UtilsDialog {
   static Future<void> updateChildDialog(
       BuildContext context, String childUid) async {
     final childNameController = TextEditingController();
-
     final childUrlController = TextEditingController();
-
-    // bool isUploading = false;
-
     await showDialog(
       context: context,
       builder: (context) {
@@ -220,6 +210,7 @@ class UtilsDialog {
                       EasyLoading.show();
                       await childProvider.updateChild(childUid,
                           childUrlController.text, childNameController.text);
+                      await childProvider.getChilds();
                       Utils.back(context);
                       EasyLoading.dismiss();
                     }

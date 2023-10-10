@@ -11,6 +11,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 class ChildProvider extends ChangeNotifier {
   User? get currentuser => FirebaseAuth.instance.currentUser;
 
+  List<ChildModel> _child = [];
+
+  List<ChildModel> get child => _child;
+
 // add child
   Future<void> addChildToFirestore(ChildModel childModel) async {
     await childrenCollection(parentId: currentuser!.uid)
@@ -19,10 +23,11 @@ class ChildProvider extends ChangeNotifier {
   }
 
   // delete child
-  Future<void> deleteChild(ChildModel childModel) async {
+  Future<void> deleteChild(ChildModel child) async {
     await childrenCollection(parentId: currentuser!.uid)
-        .doc(childModel.uid)
+        .doc(child.uid)
         .delete();
+    await getChilds();
     Utils.showToast('Child deleted successfully');
   }
 
@@ -55,18 +60,25 @@ class ChildProvider extends ChangeNotifier {
     });
   }
 
-  // Future<void> allowVideoForChild(
-  //   String parentId,
-  //   String videoId,
-  // ) async {
-  //   CollectionReference childsCollection =
-  //       childrenCollection(parentId: parentId);
-  //   await childsCollection.add({
-  //     'videos': videoId,
-  //   }).then((_) {
-  //     print('Video allowed for child successfully.');
-  //   }).catchError((error) {
-  //     print('Error allowing video for child: $error');
-  //   });
-  // }
+  // add channel for child
+  Future<void> addChannelForChild(
+    String channelId,
+    String childId,
+  ) async {
+    await childrenCollection(parentId: currentuser!.uid).doc(childId).update({
+      'channels': FieldValue.arrayUnion([childId]),
+    });
+  }
+
+  Future<void> getChilds() async {
+    _child = [];
+    final res = await childrenCollection(parentId: currentuser!.uid).get();
+    if (res.docs.isNotEmpty) {
+      for (var data in res.docs) {
+        _child.add(ChildModel.fromJson(data.data() as Map<String, dynamic>));
+      }
+    }
+
+    notifyListeners();
+  }
 }
