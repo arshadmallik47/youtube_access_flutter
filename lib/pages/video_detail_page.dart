@@ -7,13 +7,10 @@ import 'package:example/Utils/utils.dart';
 import 'package:example/models/child_model.dart';
 import 'package:example/models/subscribed.dart';
 import 'package:example/providers/auth_provider.dart';
-import 'package:example/providers/child_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pod_player/pod_player.dart';
-import 'package:provider/provider.dart';
 import 'package:youtube_scrape_api/models/video_data.dart';
 import 'package:youtube_scrape_api/youtube_scrape_api.dart';
 import '../constants.dart';
@@ -242,8 +239,6 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                               const SizedBox(
                                                 height: 2,
                                               ),
-                                              //InkWell(
-
                                               Text(
                                                 "Share",
                                                 style: TextStyle(
@@ -763,23 +758,24 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
 
   // download
   // Future<void> downloadVideo() async {
+  //   final directory =
+  //       await getExternalStorageDirectory(); // This will return the external storage directory on Android
+  //   final downloadDirectory = '${directory!.path}/your_app_download_directory';
+
+  //   final savedDir = Directory(downloadDirectory);
+
+  //   if (!savedDir.existsSync()) {
+  //     savedDir.createSync(recursive: true);
+  //   }
+  //   final String filename = videoData!.video!.title.toString();
   //   final String youtubeVideoId = videoData!.video!.videoId!;
   //   final taskId = await FlutterDownloader.enqueue(
   //     url: 'https://www.youtube.com/watch?v=$youtubeVideoId',
-  //     savedDir: '/storage/emulated/0/Download',
-  //     fileName: '$youtubeVideoId.mp4',
+  //     savedDir: downloadDirectory,
+  //     fileName: '$filename.mp4',
   //     showNotification: true,
   //     openFileFromNotification: true,
   //   );
   //   print('Download task ID: $taskId');
   // }
-
-  void _showPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AllowVideoPopup(video: videoData!);
-      },
-    );
-  }
 }

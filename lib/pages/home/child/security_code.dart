@@ -1,14 +1,14 @@
-// ignore_for_file: use_build_context_synchronously
-import 'package:example/Utils/firestore_collection.dart';
+// ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks
 import 'package:example/Utils/utils.dart';
+import 'package:example/pages/home/child/child_home_page.dart';
 import 'package:example/pages/home/child/child_video_page.dart';
-import 'package:example/providers/auth_provider.dart';
 import 'package:example/providers/child_provider.dart';
 import 'package:example/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 class SecurityCodePage extends HookWidget {
   const SecurityCodePage({
     super.key,
@@ -16,54 +16,10 @@ class SecurityCodePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final childProvider = Provider.of<ChildProvider>(context);
-    final authProvider = Provider.of<AuthProvider>(context);
     final passwordController = useTextEditingController();
     final usernameController = useTextEditingController();
     final userEmailController = useTextEditingController();
     final showPassword = useState(true);
-
-    Future<void> checkCredential() async {
-      final collectionRef =
-          childrenCollection(parentId: childProvider.currentuser!.uid);
-      final snapshot = await collectionRef
-          .where('childname', isEqualTo: usernameController.text)
-          .where('securityCode', isEqualTo: passwordController.text)
-          .get();
-      if (snapshot.docs.isNotEmpty) {
-        // Fetch the parent email from Firestore
-        final userDoc =
-            await userCollection.doc(authProvider.currentuser!.uid).get();
-        final userEmail = userDoc['email'];
-        if (userEmail.isNotEmpty) {
-          // Check if the entered email matches the fetched email
-          if (userEmail == userEmailController.text) {
-            Utils.navigateTo(context, const ChildVideoPage());
-            EasyLoading.dismiss();
-            usernameController.clear();
-            passwordController.clear();
-            userEmailController.clear();
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              backgroundColor: Colors.black,
-              content: Text(
-                'Email is wrong',
-                style: TextStyle(color: Colors.white),
-              ),
-            ));
-          }
-        }
-      } else {
-        // Username or password is incorrect; show an error message
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          backgroundColor: Colors.black,
-          content: Text(
-            'Invalid username or password',
-            style: TextStyle(color: Colors.white),
-          ),
-        ));
-      }
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -78,6 +34,7 @@ class SecurityCodePage extends HookWidget {
               controller: userEmailController,
               hintText: 'Enter Parent Email:', // Add a hint for user email
               hintStyle: const TextStyle(fontSize: 15, color: Colors.white),
+
               textAlign: TextAlign.left,
               enableBorder: false,
             ),
@@ -128,17 +85,24 @@ class SecurityCodePage extends HookWidget {
             padding: const EdgeInsets.symmetric(horizontal: 50),
             width: double.infinity,
             child: ElevatedButton(
-                onPressed: () {
-                  if (userEmailController.text.isNotEmpty) {
-                    checkCredential();
+                onPressed: () async {
+                  if (usernameController.text.isEmpty) {
+                    Utils.showToast('Enter your name');
+                  } else if (userEmailController.text.isEmpty) {
+                    Utils.showToast('Enter your Email');
+                  } else if (passwordController.text.isEmpty) {
+                    Utils.showToast('Enter security code');
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      backgroundColor: Colors.black,
-                      content: Text(
-                        'User email is empty',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ));
+                    EasyLoading.show();
+                    await childProvider.getLoggedInChild(
+                        parentEmail: userEmailController.text,
+                        childName: usernameController.text,
+                        securityCode: passwordController.text);
+                    Utils.navigateTo(context, const ChildHomePage());
+                    EasyLoading.dismiss();
+                    userEmailController.clear();
+                    usernameController.clear();
+                    passwordController.clear();
                   }
                 },
                 child: const Text(

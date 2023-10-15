@@ -2,11 +2,10 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:example/Utils/firestore_collection.dart';
+import 'package:example/Utils/update_child_dialog.dart';
 
 import 'package:example/Utils/utils.dart';
-import 'package:example/Utils/utils_dialog.dart';
-import 'package:example/models/child_model.dart';
-
+import 'package:example/Utils/add_child_dialog.dart';
 import 'package:example/models/user_model.dart';
 import 'package:example/providers/auth_provider.dart';
 import 'package:example/providers/child_provider.dart';
@@ -176,8 +175,8 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () async {
-                              await UtilsDialog.showAddChildDialog(
+                            onPressed: () {
+                              AddChildDialog.showAddChildDialog(
                                   context, user.uid);
                             },
                             child: const Text('Add Child'),
@@ -227,8 +226,9 @@ class _SettingPageState extends State<SettingPage> {
                                             icon: const Icon(Icons.delete)),
                                         IconButton(
                                             onPressed: () {
-                                              UtilsDialog.updateChildDialog(
-                                                  context, child.uid);
+                                              UpdateChildDialog
+                                                  .updateChildDialog(
+                                                      context, child.uid);
                                             },
                                             icon: const Icon(Icons.edit))
                                       ],

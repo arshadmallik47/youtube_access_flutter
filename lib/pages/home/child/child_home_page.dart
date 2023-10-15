@@ -1,5 +1,6 @@
 import 'package:example/constants.dart';
 import 'package:example/pages/home/child/child_channel_page.dart';
+import 'package:example/pages/home/child/child_video_page.dart';
 
 import 'package:example/theme/colors.dart';
 import 'package:example/utilities/custom_app_bar.dart';
@@ -27,7 +28,7 @@ class _ChildHomePageState extends State<ChildHomePage> {
   Widget body() {
     switch (_selectedIndex) {
       case 0:
-        return const ChildChannelPage();
+        return const ChildVideoPage();
     }
     switch (_selectedIndex) {
       case 1:

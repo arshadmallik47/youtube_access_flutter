@@ -6,11 +6,10 @@ import 'package:example/providers/child_provider.dart';
 import 'package:example/providers/file_upload_provider.dart';
 import 'package:example/providers/image_picker_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-class UtilsDialog {
+class AddChildDialog {
   static Future<void> showAddChildDialog(
       BuildContext context, String parentUid) async {
     final nameController = TextEditingController();
@@ -157,65 +156,6 @@ class UtilsDialog {
                     }
                   },
                   child: const Text('Save'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  static Future<void> updateChildDialog(
-      BuildContext context, String childUid) async {
-    final childNameController = TextEditingController();
-    final childUrlController = TextEditingController();
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Update Child'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: childNameController,
-                      decoration:
-                          const InputDecoration(labelText: 'Child Name'),
-                    ),
-                    TextField(
-                      controller: childUrlController,
-                      obscureText: true,
-                      decoration: const InputDecoration(labelText: 'Image Url'),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final childProvider =
-                        Provider.of<ChildProvider>(context, listen: false);
-                    if (childNameController.text.isNotEmpty) {
-                      EasyLoading.show();
-                      await childProvider.updateChild(childUid,
-                          childUrlController.text, childNameController.text);
-                      await childProvider.getChilds();
-                      Utils.back(context);
-                      EasyLoading.dismiss();
-                    }
-                  },
-                  child: const Text('Update'),
                 ),
               ],
             );

@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:example/Utils/firestore_collection.dart';
 import 'package:example/pages/channel_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_scrape_api/models/channel_data.dart';
@@ -24,7 +25,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
     return Scaffold(
       body: SizedBox(
         child: FutureBuilder(
-          future: FirebaseFirestore.instance.collection('recommendation').get(),
+          future: recommendCollection.get(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
               return const Text("SomeThing went wrong!");

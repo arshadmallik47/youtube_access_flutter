@@ -59,7 +59,7 @@ class _SearchPageState extends State<SearchPage> {
           Visibility(
             visible: firstLoad,
             child: Center(
-              child: CircularProgressIndicator(),
+              child: const CircularProgressIndicator(),
             ),
           ),
           LazyLoadScrollView(
