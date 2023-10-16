@@ -55,8 +55,6 @@ class SharedHelper {
     _removeSubscribedChannelsId(channelId);
   }
 
-  //checkSubscribedChannels(String s) {}
-
   Future<bool> checkSubscribedChannels(String channelId) async {
     sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences!.getString(channelId) != null;

@@ -34,7 +34,7 @@ class _ChildVideoPageState extends State<ChildVideoPage> {
                   return const Text('no Data found');
                 }
                 if (snapshot.hasData) {
-                  return VideoWidget(video: snapshot.data!.videosList[index]);
+                  return VideoWidget(video: snapshot.data!.videosList.first);
                 }
                 return const Text('No videos found!');
               });

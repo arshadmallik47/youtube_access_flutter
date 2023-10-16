@@ -3,7 +3,9 @@
 // prefer_typing_uninitialized_variables
 
 import 'dart:convert';
+import 'package:example/providers/subscription_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_scrape_api/models/channel_data.dart';
 import 'package:youtube_scrape_api/models/video.dart';
 import 'package:youtube_scrape_api/youtube_scrape_api.dart';
@@ -59,6 +61,9 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    bool isSubscribed = Provider.of<SubscriptionProvider>(
+      context,
+    ).isSubscribed;
     return SingleChildScrollView(
       controller: controller,
       child: Stack(
@@ -104,58 +109,36 @@ class _BodyState extends State<Body> {
                       ),
                     ),
                     SizedBox(
-                      height: 35,
-                      width: 90,
-                      child: isSubscribed
-                          ? TextButton(
-                              onPressed: () async {
-                                unSubscribe();
-                              },
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.redAccent),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
-                                textStyle: MaterialStateProperty.all<TextStyle>(
-                                  const TextStyle(
-                                      fontSize: 11, fontFamily: 'Cairo'),
-                                ),
-                              ),
-                              child: const Text(
-                                'UnSubscribe',
-                                style: TextStyle(
-                                    color: Colors.white, fontFamily: 'Cairo'),
-                              ),
-                            )
-                          : TextButton(
-                              onPressed: () async {
-                                subscribe();
-                              },
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.red),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
-                                textStyle: MaterialStateProperty.all<TextStyle>(
-                                  const TextStyle(
-                                      fontSize: 11, fontFamily: 'Cairo'),
-                                ),
-                              ),
-                              child: const Text(
-                                'Subscribe',
-                                style: TextStyle(
-                                    color: Colors.white, fontFamily: 'Cairo'),
+                        height: 35,
+                        width: 90,
+                        child: TextButton(
+                          onPressed: () async {
+                            if (isSubscribed) {
+                              unSubscribe();
+                            } else {
+                              subscribe();
+                            }
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.redAccent),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
                               ),
                             ),
-                    ),
+                            textStyle: MaterialStateProperty.all<TextStyle>(
+                              const TextStyle(
+                                  fontSize: 11, fontFamily: 'Cairo'),
+                            ),
+                          ),
+                          child: Text(
+                            isSubscribed ? 'UnSubscribe' : 'subscribe',
+                            style: const TextStyle(
+                                color: Colors.white, fontFamily: 'Cairo'),
+                          ),
+                        )),
                   ],
                 ),
               ),
@@ -230,16 +213,12 @@ class _BodyState extends State<Body> {
   void subscribe() async {
     sharedHelper.subscribeChannel(
         widget.channelId, jsonEncode(subscribed!.toJson()));
-    setState(() {
-      isSubscribed = true;
-    });
+    Provider.of<SubscriptionProvider>(context, listen: false).subscribe();
   }
 
   void unSubscribe() async {
     sharedHelper.unSubscribeChannel(widget.channelId);
-    setState(() {
-      isSubscribed = false;
-    });
+    Provider.of<SubscriptionProvider>(context, listen: false).unSubscribe();
   }
 
   void _loadMore() async {

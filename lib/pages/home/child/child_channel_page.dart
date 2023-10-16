@@ -17,33 +17,6 @@ class _ChildChannelPageState extends State<ChildChannelPage> {
   Widget build(BuildContext context) {
     final childProvider = Provider.of<ChildProvider>(context);
 
-    // return Scaffold(
-    //   body: ListView.builder(
-    //     itemCount: childProvider.currentChild?.channels.length,
-    //     itemBuilder: (BuildContext context, int index) {
-    //       return FutureBuilder<ChannelData?>(
-    //           future: YoutubeDataApi().fetchChannelData(
-    //               childProvider.currentChild!.channels[index]),
-    //           builder: (context, snapshot) {
-    //             if (snapshot.connectionState == ConnectionState.waiting) {
-    //               return const Center(
-    //                 child: Text('loading...'),
-    //               );
-    //             }
-    //             if (!snapshot.hasData) {
-    //               return const Text('no Data found');
-    //             }
-    //             final channel = snapshot.data!;
-    //             if (snapshot.hasData) {
-    //               return ChannelViewPage(
-    //                   data: channel,
-    //                   id: childProvider.currentChild!.channels[index]);
-    //             }
-    //             return Container();
-    //           });
-    //     },
-    //   ),
-    // );
     return Scaffold(
       body: ListView.builder(
         itemCount: childProvider.currentChild?.channels.length,

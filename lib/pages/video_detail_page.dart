@@ -1,16 +1,21 @@
 // ignore_for_file: must_be_immutable, library_private_types_in_public_api, unused_field
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:example/Utils/child_channel_popup.dart';
 import 'package:example/Utils/child_video_popup.dart';
 import 'package:example/Utils/utils.dart';
 import 'package:example/models/child_model.dart';
 import 'package:example/models/subscribed.dart';
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/providers/subscription_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pod_player/pod_player.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_scrape_api/models/video_data.dart';
 import 'package:youtube_scrape_api/youtube_scrape_api.dart';
 import '../constants.dart';
@@ -43,7 +48,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   VideoData? videoData;
   double? progressPadding;
   final unknown = "Unknown";
-  bool isSubscribed = false;
+
   SharedHelper sharedHelper = SharedHelper();
   late Future<bool> checkFuture;
   ChildModel? childModel;
@@ -76,6 +81,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   }
 
   Widget getBody() {
+    bool isSubscribed = Provider.of<SubscriptionProvider>(context).isSubscribed;
     var size = MediaQuery.of(context).size;
     return SafeArea(
       child: Column(
@@ -252,6 +258,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                           ),
                                         ),
                                         InkWell(
+                                          onTap: downloadVideo,
                                           child: Column(
                                             children: <Widget>[
                                               Icon(
@@ -346,7 +353,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 20, right: 20),
+                                  const EdgeInsets.only(left: 20, right: 17),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -741,41 +748,37 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
           videosCount: "");
       sharedHelper.subscribeChannel(
           videoData!.video!.channelId!, jsonEncode(subscribed.toJson()));
-      setState(() {
-        isSubscribed = true;
-      });
+      Provider.of<SubscriptionProvider>(context, listen: false).subscribe();
     }
   }
 
   void unSubscribe() async {
     sharedHelper.unSubscribeChannel(videoData!.video!.channelId!);
-    setState(() {
-      isSubscribed = false;
-    });
+    Provider.of<SubscriptionProvider>(context, listen: false).unSubscribe();
 
     ///TODO: Unsubscribe channel from video page
   }
 
   // download
-  // Future<void> downloadVideo() async {
-  //   final directory =
-  //       await getExternalStorageDirectory(); // This will return the external storage directory on Android
-  //   final downloadDirectory = '${directory!.path}/your_app_download_directory';
+  Future<void> downloadVideo() async {
+    final directory =
+        await getExternalStorageDirectory(); // This will return the external storage directory on Android
+    final downloadDirectory = '${directory!.path}/your_app_download_directory';
 
-  //   final savedDir = Directory(downloadDirectory);
+    final savedDir = Directory(downloadDirectory);
 
-  //   if (!savedDir.existsSync()) {
-  //     savedDir.createSync(recursive: true);
-  //   }
-  //   final String filename = videoData!.video!.title.toString();
-  //   final String youtubeVideoId = videoData!.video!.videoId!;
-  //   final taskId = await FlutterDownloader.enqueue(
-  //     url: 'https://www.youtube.com/watch?v=$youtubeVideoId',
-  //     savedDir: downloadDirectory,
-  //     fileName: '$filename.mp4',
-  //     showNotification: true,
-  //     openFileFromNotification: true,
-  //   );
-  //   print('Download task ID: $taskId');
-  // }
+    if (!savedDir.existsSync()) {
+      savedDir.createSync(recursive: true);
+    }
+    final String filename = videoData!.video!.title.toString();
+    final String youtubeVideoId = videoData!.video!.videoId!;
+    final taskId = await FlutterDownloader.enqueue(
+      url: 'https://www.youtube.com/watch?v=$youtubeVideoId',
+      savedDir: downloadDirectory,
+      fileName: '$filename.mp4',
+      showNotification: true,
+      openFileFromNotification: true,
+    );
+    print('Download task ID: $taskId');
+  }
 }
