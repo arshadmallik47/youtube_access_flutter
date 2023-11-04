@@ -1,13 +1,12 @@
-// ignore_for_file: must_be_immutable,, prefer_typing_uninitialized_variables, library_private_types_in_public_api
+// ignore_for_file: must_be_immutable,, prefer_typing_uninitialized_variables, library_private_types_in_public_api, non_constant_identifier_names
 // library_private_types_in_public_api,
 // prefer_typing_uninitialized_variables
-
-import 'dart:convert';
 import 'package:example/providers/subscription_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_scrape_api/models/channel_data.dart';
 import 'package:youtube_scrape_api/models/video.dart';
+import 'package:youtube_scrape_api/models/video_data.dart';
 import 'package:youtube_scrape_api/youtube_scrape_api.dart';
 import '/helpers/shared_helper.dart';
 import '../../models/subscribed.dart';
@@ -19,12 +18,13 @@ class Body extends StatefulWidget {
   YoutubeDataApi youtubeDataApi;
   String channelId;
 
-  Body(
-      {super.key,
-      required this.channelData,
-      required this.title,
-      required this.youtubeDataApi,
-      required this.channelId});
+  Body({
+    super.key,
+    required this.channelData,
+    required this.title,
+    required this.youtubeDataApi,
+    required this.channelId,
+  });
 
   @override
   _BodyState createState() => _BodyState();
@@ -33,6 +33,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   late ScrollController controller;
   late List<Video> contentList;
+  //VideoData? vidoeData;
   Subscribed? subscribed;
   bool videosEnd = false;
   bool isLoading = true;
@@ -61,9 +62,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSubscribed = Provider.of<SubscriptionProvider>(
-      context,
-    ).isSubscribed;
+    final subscriberProvider = Provider.of<SubscriptionProvider>(context);
     return SingleChildScrollView(
       controller: controller,
       child: Stack(
@@ -109,36 +108,44 @@ class _BodyState extends State<Body> {
                       ),
                     ),
                     SizedBox(
-                        height: 35,
-                        width: 90,
-                        child: TextButton(
-                          onPressed: () async {
-                            if (isSubscribed) {
-                              unSubscribe();
-                            } else {
-                              subscribe();
-                            }
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.redAccent),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                            textStyle: MaterialStateProperty.all<TextStyle>(
-                              const TextStyle(
-                                  fontSize: 11, fontFamily: 'Cairo'),
+                      height: 35,
+                      width: 90,
+                      child: TextButton(
+                        onPressed: () async {
+                          // if (subscriberProvider.subscribers != null &&
+                          //     subscriberProvider.subscribers!
+                          //         .contains(notifications)) {
+                          //   subscriberProvider.unsubscribe(
+                          //       channelId: vidoeData!.video!.channelId!);
+                          // } else {
+                          //   var data = vidoeData!;
+                          //   subscriberProvider.subscribe(videoData: data);
+                          // }
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.redAccent),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
                             ),
                           ),
-                          child: Text(
-                            isSubscribed ? 'UnSubscribe' : 'subscribe',
-                            style: const TextStyle(
-                                color: Colors.white, fontFamily: 'Cairo'),
+                          textStyle: MaterialStateProperty.all<TextStyle>(
+                            const TextStyle(fontSize: 11, fontFamily: 'Cairo'),
                           ),
-                        )),
+                        ),
+                        child: Text(
+                          // subscriberProvider.subscribers != null &&
+                          //         subscriberProvider.subscribers!
+                          //             .contains(vidoeData!.video!.channelId!)
+                          //     ? 'UnSubscribe'
+                          'Subscribe',
+                          style: const TextStyle(
+                              color: Colors.white, fontFamily: 'Cairo'),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -208,17 +215,6 @@ class _BodyState extends State<Body> {
       );
     }
     return Container();
-  }
-
-  void subscribe() async {
-    sharedHelper.subscribeChannel(
-        widget.channelId, jsonEncode(subscribed!.toJson()));
-    Provider.of<SubscriptionProvider>(context, listen: false).subscribe();
-  }
-
-  void unSubscribe() async {
-    sharedHelper.unSubscribeChannel(widget.channelId);
-    Provider.of<SubscriptionProvider>(context, listen: false).unSubscribe();
   }
 
   void _loadMore() async {

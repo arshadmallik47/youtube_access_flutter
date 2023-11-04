@@ -241,9 +241,7 @@ class SignupPage extends HookWidget {
                     EasyLoading.dismiss();
 
                     if (imageUrl != null) {
-                      Provider.of<AuthProvider>(context, listen: false)
-                          .currentuser!
-                          .uid;
+                      authProvider.currentuser!.uid;
                     }
                     if (res.user != null) {
                       await authProvider.addUserToFirestore(
@@ -275,7 +273,6 @@ class SignupPage extends HookWidget {
 
                     EasyLoading.show();
 
-                    //final res =
                     await authProvider.signInWithGoogle();
                     EasyLoading.dismiss();
                     Utils.navigateTo(context, const HomePage());

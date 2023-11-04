@@ -1,22 +1,38 @@
+import 'dart:convert';
+
+import 'package:example/helpers/shared_helper.dart';
+import 'package:example/models/subscribed.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:youtube_scrape_api/models/video_data.dart';
 
 class SubscriptionProvider with ChangeNotifier {
-  bool _isSubscribed = false;
+  final _sharedHelper = SharedHelper();
+  List<String>? _subscribers = [];
 
-  bool get isSubscribed => _isSubscribed;
+  List<String>? get subscribers => _subscribers;
 
-  void subscribe() async {
-    _isSubscribed = true;
+  Future<void> loadAllSubscribers() async {
+    _subscribers =
+        _sharedHelper.sharedPreferences!.getStringList('subscribedChannelsIds');
     notifyListeners();
   }
 
-  void unSubscribe() async {
-    _isSubscribed = false;
+  void subscribe({required VideoData videoData}) {
+    final data = videoData.video!;
+    final subscribed = Subscribed(
+        username: data.channelName,
+        channelId: data.channelId,
+        avatar: data.channelThumb,
+        videosCount: "");
+    _sharedHelper.subscribeChannel(
+        videoData.video!.channelId!, jsonEncode(subscribed.toJson()));
+    _subscribers!.add(videoData.video!.channelId!);
     notifyListeners();
   }
 
-  bool isUserSubscribed(String channelId) {
-    return false;
+  void unsubscribe({required String channelId}) {
+    _sharedHelper.unSubscribeChannel(channelId);
+    _subscribers?.removeWhere((element) => element == channelId);
   }
 }

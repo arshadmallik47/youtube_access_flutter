@@ -2,7 +2,9 @@
 
 import 'package:example/pages/home/recomendation.dart';
 import 'package:example/pages/home/setting_page.dart';
+import 'package:example/providers/subscription_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_scrape_api/models/video.dart';
 
 import 'package:youtube_scrape_api/youtube_scrape_api.dart';
@@ -32,6 +34,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<SubscriptionProvider>(context, listen: false)
+        .loadAllSubscribers();
+
     trending = youtubeDataApi.fetchTrendingVideo();
     contentList = [];
   }

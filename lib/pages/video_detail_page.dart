@@ -33,7 +33,7 @@ class VideoDetailPage extends StatefulWidget {
 }
 
 class _VideoDetailPageState extends State<VideoDetailPage> {
-  //Subscribed? subscribed;
+  
   bool isSwitched = true;
   late PodPlayerController _controller;
   AuthProvider authProvider = AuthProvider();
@@ -81,7 +81,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   }
 
   Widget getBody() {
-    bool isSubscribed = Provider.of<SubscriptionProvider>(context).isSubscribed;
+    final subscriberProvider = Provider.of<SubscriptionProvider>(context);
     var size = MediaQuery.of(context).size;
     return SafeArea(
       child: Column(
@@ -258,7 +258,7 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                           ),
                                         ),
                                         InkWell(
-                                          onTap: downloadVideo,
+                                        
                                           child: Column(
                                             children: <Widget>[
                                               Icon(
@@ -280,25 +280,6 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                             ],
                                           ),
                                         ),
-                                        // Column(
-                                        //   children: <Widget>[
-                                        //     Icon(
-                                        //       LineIcons.plus,
-                                        //       color: white.withOpacity(0.5),
-                                        //       size: 26,
-                                        //     ),
-                                        //     const SizedBox(
-                                        //       height: 2,
-                                        //     ),
-                                        //     Text(
-                                        //       "Save",
-                                        //       style: TextStyle(
-                                        //           color: white.withOpacity(0.4),
-                                        //           fontSize: 13,
-                                        //           fontFamily: 'Cairo'),
-                                        //     )
-                                        //   ],
-                                        // )
                                       ],
                                     ),
                                   ),
@@ -315,14 +296,6 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                                 context,
                                                 AllowVideoPopup(
                                                     video: videoData!));
-
-                                            // final videoId =
-                                            //     videoData!.video!.videoId!;
-                                            // final childProvider =
-                                            //     Provider.of<ChildProvider>(
-                                            //         context);
-                                            // childProvider.allowVideoForChild(
-                                            //     videoId, childModel!.uid);
                                           },
                                           child: const Text(
                                             'Allow Video for child',
@@ -432,18 +405,29 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      if (isSubscribed) {
-                                        unSubscribe();
+                                      if (subscriberProvider.subscribers !=
+                                              null &&
+                                          subscriberProvider.subscribers!
+                                              .contains(videoData!
+                                                  .video!.channelId!)) {
+                                        subscriberProvider.unsubscribe(
+                                            channelId:
+                                                videoData!.video!.channelId!);
                                       } else {
-                                        subscribe();
+                                        subscriberProvider.subscribe(
+                                            videoData: videoData!);
                                       }
                                     },
                                     child: Text(
-                                      isSubscribed
+                                      subscriberProvider.subscribers != null &&
+                                              subscriberProvider.subscribers!
+                                                  .contains(videoData!
+                                                      .video!.channelId!)
                                           ? 'UNSUBSCRIBE'
                                           : "SUBSCRIBE",
                                     ),
                                   ),
+
                                   // FutureBuilder<bool>(
                                   //     future: checkFuture,
                                   //     builder: (context, snapshot) {
@@ -738,47 +722,6 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
     });
   }
 
-  void subscribe() async {
-    if (videoData != null && videoData!.video != null) {
-      final data = videoData!.video!;
-      final subscribed = Subscribed(
-          username: data.channelName,
-          channelId: data.channelId,
-          avatar: data.channelThumb,
-          videosCount: "");
-      sharedHelper.subscribeChannel(
-          videoData!.video!.channelId!, jsonEncode(subscribed.toJson()));
-      Provider.of<SubscriptionProvider>(context, listen: false).subscribe();
-    }
-  }
-
-  void unSubscribe() async {
-    sharedHelper.unSubscribeChannel(videoData!.video!.channelId!);
-    Provider.of<SubscriptionProvider>(context, listen: false).unSubscribe();
-
-    ///TODO: Unsubscribe channel from video page
-  }
-
   // download
-  Future<void> downloadVideo() async {
-    final directory =
-        await getExternalStorageDirectory(); // This will return the external storage directory on Android
-    final downloadDirectory = '${directory!.path}/your_app_download_directory';
-
-    final savedDir = Directory(downloadDirectory);
-
-    if (!savedDir.existsSync()) {
-      savedDir.createSync(recursive: true);
-    }
-    final String filename = videoData!.video!.title.toString();
-    final String youtubeVideoId = videoData!.video!.videoId!;
-    final taskId = await FlutterDownloader.enqueue(
-      url: 'https://www.youtube.com/watch?v=$youtubeVideoId',
-      savedDir: downloadDirectory,
-      fileName: '$filename.mp4',
-      showNotification: true,
-      openFileFromNotification: true,
-    );
-    print('Download task ID: $taskId');
-  }
+ 
 }
